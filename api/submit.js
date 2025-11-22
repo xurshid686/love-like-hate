@@ -16,13 +16,30 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { message, botToken, chatId } = req.body;
+    const { message, studentName, score, total, percentage } = req.body;
 
-    if (!message || !botToken || !chatId) {
+    if (!message) {
       return res.status(400).json({ 
-        error: 'Missing required fields: message, botToken, chatId' 
+        error: 'Missing required field: message' 
       });
     }
+
+    // Get credentials from environment variables
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+      console.error('Missing environment variables:', {
+        hasBotToken: !!botToken,
+        hasChatId: !!chatId
+      });
+      return res.status(500).json({ 
+        error: 'Telegram credentials not configured',
+        details: 'Please set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables'
+      });
+    }
+
+    console.log(`Sending results for student: ${studentName}, Score: ${score}/${total} (${percentage}%)`);
 
     // Send message to Telegram
     const telegramResponse = await fetch(
@@ -46,10 +63,12 @@ module.exports = async (req, res) => {
       console.error('Telegram API error:', telegramData);
       return res.status(500).json({ 
         error: 'Failed to send message to Telegram',
-        details: telegramData
+        details: telegramData.description
       });
     }
 
+    console.log('Results sent to Telegram successfully');
+    
     res.status(200).json({ 
       success: true, 
       message: 'Results sent to Telegram successfully' 
