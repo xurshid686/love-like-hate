@@ -287,6 +287,27 @@
             display: none;
             z-index: 1000;
         }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -330,15 +351,19 @@
         <div class="results" id="resultsSection">
             <!-- Results will be displayed here -->
         </div>
+
+        <!-- Loading Section -->
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <p>Submitting your results and sending to Telegram...</p>
+        </div>
     </div>
 
     <script>
         // Test configuration
         const TEST_CONFIG = {
             totalTime: 10 * 60 * 1000, // 10 minutes in milliseconds
-            totalQuestions: 15,
-            telegramBotToken: 'YOUR_BOT_TOKEN', // Replace with your bot token
-            telegramChatId: 'YOUR_CHAT_ID' // Replace with your chat ID
+            totalQuestions: 15
         };
 
         // Test questions
@@ -494,6 +519,7 @@
         const studentInfoSection = document.getElementById('studentInfoSection');
         const testSection = document.getElementById('testSection');
         const resultsSection = document.getElementById('resultsSection');
+        const loadingSection = document.getElementById('loadingSection');
         const testForm = document.getElementById('testForm');
         const timerElement = document.getElementById('timer');
         const submitBtn = document.getElementById('submitBtn');
@@ -600,9 +626,23 @@
             clearInterval(testState.timerInterval);
             testState.endTime = new Date();
 
+            // Show loading
+            testSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+
             const results = calculateResults();
-            displayResults(results);
-            await sendToTelegram(results);
+            
+            try {
+                await sendToTelegram(results);
+                displayResults(results);
+            } catch (error) {
+                console.error('Error:', error);
+                // Still show results even if Telegram fails
+                displayResults(results);
+                alert('Test submitted! But there was an error sending to Telegram.');
+            } finally {
+                loadingSection.style.display = 'none';
+            }
         }
 
         function calculateResults() {
@@ -646,7 +686,6 @@
         }
 
         function displayResults(results) {
-            testSection.style.display = 'none';
             resultsSection.style.display = 'block';
 
             const performanceText = getPerformanceText(results.percentage);
@@ -723,16 +762,26 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        botToken: TEST_CONFIG.telegramBotToken,
-                        chatId: TEST_CONFIG.telegramChatId
+                        studentName: results.studentName,
+                        score: results.score,
+                        total: results.total,
+                        percentage: results.percentage
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to send results to Telegram');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to send results');
                 }
+
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to send results');
+                }
+
             } catch (error) {
                 console.error('Error sending to Telegram:', error);
+                throw error;
             }
         }
 
