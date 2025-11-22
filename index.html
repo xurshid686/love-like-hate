@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            padding: 30px;
+        }
+
+        .student-info {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .timer {
+            background: #1e293b;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .timer.warning {
+            background: #dc2626;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .question {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 2px solid #f1f5f9;
+            transition: border-color 0.3s;
+        }
+
+        .question:hover {
+            border-color: #e2e8f0;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #1f2937;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .option:hover {
+            border-color: #4f46e5;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #4f46e5;
+            background: #4f46e5;
+            color: white;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            display: none;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#10b981 0% var(--score-percent), #e5e7eb var(--score-percent) 100%);
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-inner {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .score-percent {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .performance {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .performance.excellent { background: #d1fae5; color: #065f46; }
+        .performance.good { background: #fef3c7; color: #92400e; }
+        .performance.average { background: #fef3c7; color: #92400e; }
+        .performance.poor { background: #fee2e2; color: #991b1b; }
+
+        .detailed-results {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .result-item.correct { 
+            background: #d1fae5; 
+            border-left-color: #10b981; 
+        }
+        .result-item.wrong { 
+            background: #fee2e2; 
+            border-left-color: #ef4444; 
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .page-leave-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #dc2626;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-leave-warning" id="pageLeaveWarning">
+        ⚠️ Warning: Leaving this page may affect your test results!
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎓 English Grammar Test</h1>
+            <p>Like/Love/Hate + V-ing vs. Want to + Verb</p>
+        </div>
+
+        <!-- Student Info Form -->
+        <div class="form-section" id="studentInfoSection">
+            <div class="student-info">
+                <h2>Student Information</h2>
+                <p>Please enter your name before starting the test.</p>
+            </div>
+            <div class="form-group">
+                <label for="studentName">Full Name:</label>
+                <input type="text" id="studentName" placeholder="Enter your full name" required>
+            </div>
+            <button class="submit-btn" onclick="startTest()">Start Test</button>
+        </div>
+
+        <!-- Test Section -->
+        <div class="form-section" id="testSection" style="display: none;">
+            <div class="timer" id="timer">
+                Time Left: 10:00
+            </div>
+            
+            <form id="testForm">
+                <!-- Questions will be generated here by JavaScript -->
+            </form>
+
+            <button class="submit-btn" id="submitBtn" onclick="submitTest()" disabled>Submit Test</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results" id="resultsSection">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Test configuration
+        const TEST_CONFIG = {
+            totalTime: 10 * 60 * 1000, // 10 minutes in milliseconds
+            totalQuestions: 15,
+            telegramBotToken: 'YOUR_BOT_TOKEN', // Replace with your bot token
+            telegramChatId: 'YOUR_CHAT_ID' // Replace with your chat ID
+        };
+
+        // Test questions
+        const QUESTIONS = [
+            {
+                id: 1,
+                question: "I __________ to the park on sunny days.",
+                options: [
+                    { value: "A", text: "like going", correct: true },
+                    { value: "B", text: "like to go", correct: false },
+                    { value: "C", text: "want going", correct: false }
+                ]
+            },
+            {
+                id: 2,
+                question: "She __________ horror movies because they are too scary.",
+                options: [
+                    { value: "A", text: "hates watching", correct: true },
+                    { value: "B", text: "hates to watch", correct: false },
+                    { value: "C", text: "want watching", correct: false }
+                ]
+            },
+            {
+                id: 3,
+                question: "We __________ board games with our family.",
+                options: [
+                    { value: "A", text: "want playing", correct: false },
+                    { value: "B", text: "love to play", correct: false },
+                    { value: "C", text: "love playing", correct: true }
+                ]
+            },
+            {
+                id: 4,
+                question: "He __________ early in the morning.",
+                options: [
+                    { value: "A", text: "hates waking up", correct: true },
+                    { value: "B", text: "hate waking up", correct: false },
+                    { value: "C", text: "wants waking up", correct: false }
+                ]
+            },
+            {
+                id: 5,
+                question: "They __________ books in their free time.",
+                options: [
+                    { value: "A", text: "like reading", correct: true },
+                    { value: "B", text: "like to read", correct: false },
+                    { value: "C", text: "want reading", correct: false }
+                ]
+            },
+            {
+                id: 6,
+                question: "It's very cold. I __________ the window.",
+                options: [
+                    { value: "A", text: "want closing", correct: false },
+                    { value: "B", text: "want to close", correct: true },
+                    { value: "C", text: "like to close", correct: false }
+                ]
+            },
+            {
+                id: 7,
+                question: "She __________ a doctor when she grows up.",
+                options: [
+                    { value: "A", text: "wants being", correct: false },
+                    { value: "B", text: "wants to be", correct: true },
+                    { value: "C", text: "loves to be", correct: false }
+                ]
+            },
+            {
+                id: 8,
+                question: "We __________ some new clothes this weekend.",
+                options: [
+                    { value: "A", text: "want buying", correct: false },
+                    { value: "B", text: "want to buy", correct: true },
+                    { value: "C", text: "like to buy", correct: false }
+                ]
+            },
+            {
+                id: 9,
+                question: "They are tired. They __________ home now.",
+                options: [
+                    { value: "A", text: "want going", correct: false },
+                    { value: "B", text: "want to go", correct: true },
+                    { value: "C", text: "hate going", correct: false }
+                ]
+            },
+            {
+                id: 10,
+                question: "He __________ how to play the guitar.",
+                options: [
+                    { value: "A", text: "wants learning", correct: false },
+                    { value: "B", text: "wants to learn", correct: true },
+                    { value: "C", text: "likes learning", correct: false }
+                ]
+            },
+            {
+                id: 11,
+                question: "My brother __________ video games, but now he has to study.",
+                options: [
+                    { value: "A", text: "wants to play", correct: true },
+                    { value: "B", text: "wants playing", correct: false },
+                    { value: "C", text: "hates playing", correct: false }
+                ]
+            },
+            {
+                id: 12,
+                question: "I __________, but I don't have any eggs.",
+                options: [
+                    { value: "A", text: "want to cook", correct: true },
+                    { value: "B", text: "want cooking", correct: false },
+                    { value: "C", text: "love cooking", correct: false }
+                ]
+            },
+            {
+                id: 13,
+                question: "She __________, so she goes to the pool every day.",
+                options: [
+                    { value: "A", text: "wants swimming", correct: false },
+                    { value: "B", text: "loves to swim", correct: true },
+                    { value: "C", text: "loves swim", correct: false }
+                ]
+            },
+            {
+                id: 14,
+                question: "They __________ pizza for dinner tonight.",
+                options: [
+                    { value: "A", text: "want ordering", correct: false },
+                    { value: "B", text: "like to order", correct: false },
+                    { value: "C", text: "want to order", correct: true }
+                ]
+            },
+            {
+                id: 15,
+                question: "I __________, but it is very difficult for me.",
+                options: [
+                    { value: "A", text: "want to dance", correct: true },
+                    { value: "B", text: "love dancing", correct: false },
+                    { value: "C", text: "hate dancing", correct: false }
+                ]
+            }
+        ];
+
+        let testState = {
+            studentName: '',
+            startTime: null,
+            endTime: null,
+            timeSpent: 0,
+            pageLeaves: 0,
+            answers: {},
+            timerInterval: null
+        };
+
+        // DOM Elements
+        const studentInfoSection = document.getElementById('studentInfoSection');
+        const testSection = document.getElementById('testSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const testForm = document.getElementById('testForm');
+        const timerElement = document.getElementById('timer');
+        const submitBtn = document.getElementById('submitBtn');
+        const pageLeaveWarning = document.getElementById('pageLeaveWarning');
+
+        function startTest() {
+            const studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                alert('Please enter your name');
+                return;
+            }
+
+            testState.studentName = studentName;
+            testState.startTime = new Date();
+            testState.pageLeaves = 0;
+
+            studentInfoSection.style.display = 'none';
+            testSection.style.display = 'block';
+
+            generateQuestions();
+            startTimer();
+            setupPageLeaveDetection();
+        }
+
+        function generateQuestions() {
+            testForm.innerHTML = '';
+            QUESTIONS.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-number">Question ${index + 1}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map(opt => `
+                            <div class="option" onclick="selectOption(${q.id}, '${opt.value}')">
+                                <input type="radio" id="q${q.id}_${opt.value}" name="q${q.id}" value="${opt.value}">
+                                <label for="q${q.id}_${opt.value}">${opt.value}. ${opt.text}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                testForm.appendChild(questionDiv);
+            });
+        }
+
+        function selectOption(questionId, optionValue) {
+            testState.answers[questionId] = optionValue;
+            
+            // Update UI
+            const questionDiv = document.querySelector(`input[name="q${questionId}"]`).closest('.question');
+            questionDiv.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.closest('.option').classList.add('selected');
+
+            // Enable submit button if all questions answered
+            const answeredCount = Object.keys(testState.answers).length;
+            submitBtn.disabled = answeredCount !== TEST_CONFIG.totalQuestions;
+        }
+
+        function startTimer() {
+            const startTime = Date.now();
+            const endTime = startTime + TEST_CONFIG.totalTime;
+
+            testState.timerInterval = setInterval(() => {
+                const now = Date.now();
+                const timeLeft = endTime - now;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(testState.timerInterval);
+                    submitTest();
+                    return;
+                }
+
+                const minutes = Math.floor(timeLeft / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+                
+                timerElement.textContent = `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Warning when less than 2 minutes left
+                if (timeLeft < 2 * 60 * 1000) {
+                    timerElement.classList.add('warning');
+                }
+
+                testState.timeSpent = Math.floor((now - startTime) / 1000);
+            }, 1000);
+        }
+
+        function setupPageLeaveDetection() {
+            let hiddenTime;
+            
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    hiddenTime = Date.now();
+                    testState.pageLeaves++;
+                    pageLeaveWarning.style.display = 'block';
+                } else {
+                    pageLeaveWarning.style.display = 'none';
+                }
+            });
+        }
+
+        async function submitTest() {
+            clearInterval(testState.timerInterval);
+            testState.endTime = new Date();
+
+            const results = calculateResults();
+            displayResults(results);
+            await sendToTelegram(results);
+        }
+
+        function calculateResults() {
+            let correct = 0;
+            let wrong = 0;
+            const detailedResults = [];
+
+            QUESTIONS.forEach(q => {
+                const studentAnswer = testState.answers[q.id];
+                const correctOption = q.options.find(opt => opt.correct);
+                const isCorrect = studentAnswer === correctOption.value;
+                
+                if (isCorrect) correct++;
+                else wrong++;
+
+                detailedResults.push({
+                    question: q.question,
+                    studentAnswer: studentAnswer ? `${studentAnswer}. ${q.options.find(opt => opt.value === studentAnswer)?.text || ''}` : 'Unanswered',
+                    correctAnswer: `${correctOption.value}. ${correctOption.text}`,
+                    isCorrect: isCorrect
+                });
+            });
+
+            const score = correct;
+            const percentage = (correct / TEST_CONFIG.totalQuestions) * 100;
+
+            return {
+                studentName: testState.studentName,
+                timeSpent: testState.timeSpent,
+                timeLeft: TEST_CONFIG.totalTime / 1000 - testState.timeSpent,
+                score: score,
+                total: TEST_CONFIG.totalQuestions,
+                percentage: percentage,
+                correct: correct,
+                wrong: wrong,
+                unanswered: TEST_CONFIG.totalQuestions - (correct + wrong),
+                pageLeaves: testState.pageLeaves,
+                submittedAt: testState.endTime,
+                detailedResults: detailedResults
+            };
+        }
+
+        function displayResults(results) {
+            testSection.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            const performanceText = getPerformanceText(results.percentage);
+            const performanceClass = getPerformanceClass(results.percentage);
+
+            resultsSection.innerHTML = `
+                <div class="header">
+                    <h1>🎯 Test Results</h1>
+                    <p>Congratulations on completing the test!</p>
+                </div>
+                
+                <div class="score-circle" style="--score-percent: ${results.percentage}%">
+                    <div class="score-inner">
+                        <div class="score-percent">${Math.round(results.percentage)}%</div>
+                        <div>Score</div>
+                    </div>
+                </div>
+
+                <div class="performance ${performanceClass}">
+                    ${performanceText}
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">${results.correct}</div>
+                        <div class="stat-label">✅ Correct</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${results.wrong}</div>
+                        <div class="stat-label">❌ Wrong</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${results.unanswered}</div>
+                        <div class="stat-label">⏭️ Unanswered</div>
+                    </div>
+                </div>
+
+                <div class="detailed-results">
+                    <h3>Detailed Results:</h3>
+                    ${results.detailedResults.map((result, index) => `
+                        <div class="result-item ${result.isCorrect ? 'correct' : 'wrong'}">
+                            <strong>Question ${index + 1}:</strong> ${result.question}<br>
+                            <strong>Your Answer:</strong> ${result.studentAnswer}<br>
+                            <strong>Correct Answer:</strong> ${result.correctAnswer}<br>
+                            <strong>Status:</strong> ${result.isCorrect ? '✅ Correct' : '❌ Wrong'}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getPerformanceText(percentage) {
+            if (percentage >= 90) return '🏆 Outstanding!';
+            if (percentage >= 80) return '🎯 Excellent!';
+            if (percentage >= 70) return '👍 Good Job!';
+            if (percentage >= 60) return '💪 Average';
+            return '📚 Needs Practice';
+        }
+
+        function getPerformanceClass(percentage) {
+            if (percentage >= 80) return 'excellent';
+            if (percentage >= 60) return 'good';
+            return 'poor';
+        }
+
+        async function sendToTelegram(results) {
+            try {
+                const message = formatTelegramMessage(results);
+                
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        botToken: TEST_CONFIG.telegramBotToken,
+                        chatId: TEST_CONFIG.telegramChatId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send results to Telegram');
+                }
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+            }
+        }
+
+        function formatTelegramMessage(results) {
+            const timeSpentFormatted = `${Math.floor(results.timeSpent / 60)}m ${results.timeSpent % 60}s`;
+            const timeLeftFormatted = `${Math.floor(results.timeLeft / 60)}m ${results.timeLeft % 60}s`;
+            const submittedDate = results.submittedAt.toLocaleString();
+
+            let message = `🎓 ENGLISH TEST SUBMISSION\n\n`;
+            message += `👤 Student: ${results.studentName}\n`;
+            message += `⏱️ Time Spent: ${timeSpentFormatted}\n`;
+            message += `⏰ Time Left: ${timeLeftFormatted}\n`;
+            message += `📊 Score: ${results.score}/${results.total} (${Math.round(results.percentage)}%)\n`;
+            message += `✅ Correct: ${results.correct}\n`;
+            message += `❌ Wrong: ${results.wrong}\n`;
+            message += `⏭️ Unanswered: ${results.unanswered}\n`;
+            message += `🚪 Page Leaves: ${results.pageLeaves}\n`;
+            message += `📅 Submitted: ${submittedDate}\n\n`;
+            message += `DETAILED RESULTS:\n`;
+            message += `═══════════════════════════════\n\n`;
+
+            results.detailedResults.forEach((result, index) => {
+                const status = result.isCorrect ? '✅' : '❌';
+                message += `${status} Question ${index + 1}: ${result.question}\n`;
+                message += `   Student's Answer: ${result.studentAnswer}\n`;
+                message += `   Correct Answer: ${result.correctAnswer}\n`;
+                message += `   Status: ${result.isCorrect ? 'Correct' : 'Wrong'}\n\n`;
+            });
+
+            message += `═══════════════════════════════\n`;
+            message += `SUMMARY\n`;
+            message += `🏆 Final Score: ${Math.round(results.percentage)}%\n`;
+            message += `📈 Performance: ${getPerformanceText(results.percentage).replace('!', '')}`;
+
+            return message;
+        }
+    </script>
+</body>
+</html>
