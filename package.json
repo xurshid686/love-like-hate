@@ -1,0 +1,15 @@
+{
+  "name": "english-test-app",
+  "version": "1.0.0",
+  "description": "English grammar test with Telegram reporting",
+  "main": "api/submit.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
